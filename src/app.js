@@ -71,13 +71,14 @@ function getForecast(coordinates) {
     });
 }
 
-function updateWeatherData(response) {
+function updateWeatherDataCelsius(response) {
   console.log(response.data);
   let temperatureElement = document.querySelector("#temperature");
   let cityElement = document.querySelector("#city");
   let descriptionElement = document.querySelector("#description");
   let humidityElement = document.querySelector("#humidity");
   let windElement = document.querySelector("#wind");
+  let windUnits = document.querySelector("#wind-units");
   let datetimeElement = document.querySelector("#date-time");
   let iconElement = document.querySelector("#weather-icon");
 
@@ -87,6 +88,7 @@ function updateWeatherData(response) {
   descriptionElement.innerHTML = response.data.condition.description;
   humidityElement.innerHTML = response.data.temperature.humidity;
   windElement.innerHTML = Math.round(response.data.wind.speed);
+  windUnits.innerHTML = "km/h";
   datetimeElement.innerHTML = formatDate(response.data.time * 1000);
 
   iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
@@ -94,12 +96,49 @@ function updateWeatherData(response) {
   getForecast(response.data.coordinates);
 }
 
-function search(cityName) {
+function updateWeatherDataFahrenheit(response) {
+  console.log(response.data);
+  let temperatureElement = document.querySelector("#temperature");
+  // let cityElement = document.querySelector("#city");
+  // let descriptionElement = document.querySelector("#description");
+  // let humidityElement = document.querySelector("#humidity");
+  let windElement = document.querySelector("#wind");
+  let windUnits = document.querySelector("#wind-units");
+  // let datetimeElement = document.querySelector("#date-time");
+  // let iconElement = document.querySelector("#weather-icon");
+
+  fahrenheitTemperature = response.data.temperature.current;
+  temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
+  // cityElement.innerHTML = response.data.city;
+  // descriptionElement.innerHTML = response.data.condition.description;
+  // humidityElement.innerHTML = response.data.temperature.humidity;
+  windElement.innerHTML = Math.round(response.data.wind.speed);
+  windUnits.innerHTML = "mph";
+  // datetimeElement.innerHTML = formatDate(response.data.time * 1000);
+
+  // iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
+  // iconElement.setAttribute("alt", response.data.condition.description);
+  getForecast(response.data.coordinates);
+}
+
+function searchCelsius(cityName) {
   let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=metric`;
   console.log(endpoint);
   axios
     .get(endpoint)
-    .then(updateWeatherData)
+    .then(updateWeatherDataCelsius)
+    .catch(function (error) {
+      console.log(error);
+      showError(cityName);
+    });
+}
+
+function searchFahrenheit(cityName) {
+  let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=imperial`;
+  console.log(endpoint);
+  axios
+    .get(endpoint)
+    .then(updateWeatherDataFahrenheit)
     .catch(function (error) {
       console.log(error);
       showError(cityName);
@@ -109,7 +148,7 @@ function search(cityName) {
 function handleSearchEvent(event) {
   event.preventDefault();
   let cityElement = document.querySelector("#city-input");
-  search(cityElement.value);
+  searchCelsius(cityElement.value);
   document.querySelector("#search-form").reset();
   cleanErrorMessage();
 }
@@ -117,13 +156,16 @@ function handleSearchEvent(event) {
 function displayFahrenheitTemperature(event) {
   event.preventDefault();
   let temperatureElement = document.querySelector("#temperature");
-  let fahrenheitTemperature = (celsiusTemperature * 9) / 5 + 32;
+  //let fahrenheitTemperature = (celsiusTemperature * 9) / 5 + 32;
 
   // set class="active" for fahrenheit units and set class="Inactive" for celsius unit
   fahrenheitLink.classList.replace("inactive", "active");
   celsiusLink.classList.replace("active", "inactive");
+  let cityName = document.querySelector("#city").innerText;
+  console.log(cityName);
+  searchFahrenheit(cityName);
 
-  temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
+  //temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
 }
 
 function displayCelsiusTemperature(event) {
@@ -155,4 +197,4 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 // default search region
-search("New York");
+searchCelsius("New York");
