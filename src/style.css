@@ -88,11 +88,19 @@ body {
   color: #202124;
 }
 
-.weather-forecast-temperature {
-  font-size: 13px;
-  color: #202124;
+.forecast-temperature-max {
+  display: inline;
+  padding-right: 5px;
+  text-align: center;
 }
 
 .forecast-temperature-min {
+  display: inline;
   color: #70757a;
+  text-align: center;
+}
+
+.weather-forecast-temperature {
+  font-size: 13px;
+  color: #202124;
 }

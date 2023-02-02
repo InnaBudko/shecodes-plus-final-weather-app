@@ -49,8 +49,8 @@ function displayForecast(response) {
                     width="42"
                   />
                   <div class="weather-forecast-temperature">
-                    <span class="forecast-temperature-max">${maxTemperature}  </span>
-                    <span class="forecast-temperature-min">${minTemperature}</span>
+                    <div class="forecast-temperature-max">${maxTemperature}</div>
+                    <div class="forecast-temperature-min">${minTemperature}</div>
                   </div>
                 </div>
     `;
