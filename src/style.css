@@ -30,6 +30,10 @@ body {
   margin-bottom: 3px;
 }
 
+.overview .last-updated {
+  font-size: 0.8rem;
+}
+
 .overview .description:first-letter {
   text-transform: capitalize;
 }

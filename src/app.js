@@ -32,8 +32,6 @@ function formatDay(timestamp) {
 
 // update HTML with forecast data in Calsius units
 function displayForecastCelsius(response) {
-  console.log(response.data);
-
   let forecast = response.data.daily;
   let forecastElement = document.querySelector("#forecast");
   let forecastHTML = "";
@@ -66,8 +64,6 @@ function displayForecastCelsius(response) {
 
 // update HTML with forecast data in Fahrenheit units
 function displayForecastFahrenheit(response) {
-  console.log(response.data);
-
   let forecast = response.data.daily;
   let forecastElement = document.querySelector("#forecast");
   let forecastHTML = "";
@@ -100,7 +96,6 @@ function displayForecastFahrenheit(response) {
 
 // fetch forecast data with Celsius units
 function getForecastCelsius(coordinates) {
-  console.log(coordinates);
   let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=metric`;
   axios
     .get(endpoint)
@@ -112,7 +107,6 @@ function getForecastCelsius(coordinates) {
 
 // fetch forecast data with Fahrenheit units
 function getForecastFahrenheit(coordinates) {
-  console.log(coordinates);
   let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=imperial`;
   axios
     .get(endpoint)
@@ -124,7 +118,6 @@ function getForecastFahrenheit(coordinates) {
 
 // update HTML with weather data in Celsius units
 function updateWeatherDataCelsius(response) {
-  console.log(response.data);
   let temperatureElement = document.querySelector("#temperature");
   let cityElement = document.querySelector("#city");
   let descriptionElement = document.querySelector("#description");
@@ -150,7 +143,6 @@ function updateWeatherDataCelsius(response) {
 
 // update HTML with weather data about time, temperatures, wind speed and wind units in Fahrenheit units
 function updateWeatherDataFahrenheit(response) {
-  console.log(response.data);
   let temperatureElement = document.querySelector("#temperature");
   let windElement = document.querySelector("#wind");
   let windUnits = document.querySelector("#wind-units");
@@ -167,7 +159,6 @@ function updateWeatherDataFahrenheit(response) {
 //  request current weather data with Celsius units
 function searchCelsius(cityName) {
   let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=metric`;
-  console.log(endpoint);
   axios
     .get(endpoint)
     .then(updateWeatherDataCelsius)
@@ -180,7 +171,6 @@ function searchCelsius(cityName) {
 //  request current weather data with Fahrenheit units
 function searchFahrenheit(cityName) {
   let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=imperial`;
-  console.log(endpoint);
   axios
     .get(endpoint)
     .then(updateWeatherDataFahrenheit)
@@ -226,7 +216,6 @@ function displayFahrenheitTemperature(event) {
 }
 
 // Global variables region
-
 let apiKey = "95c40b01td464da65f4f835cof7b5c75";
 let celsiusTemperature = null;
 
