@@ -143,7 +143,12 @@ function updateWeatherDataCelsius(response) {
   windUnits.innerHTML = "km/h";
   datetimeElement.innerHTML = formatDate(response.data.time * 1000);
 
-  iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
+  let icon_url_https = response.data.condition.icon_url.replace(
+    "http://",
+    "https://"
+  );
+  //iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
+  iconElement.setAttribute("src", `${icon_url_https}`);
   iconElement.setAttribute("alt", response.data.condition.description);
 
   celsiusLink.classList.replace("inactive", "active");
