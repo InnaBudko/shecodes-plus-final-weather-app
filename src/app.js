@@ -39,14 +39,20 @@ function displayForecastCelsius(response) {
   forecast.forEach(function (forecastDay, index) {
     let maxTemperature = Math.round(forecastDay.temperature.maximum);
     let minTemperature = Math.round(forecastDay.temperature.minimum);
-    let src = forecastDay.condition.icon_url.replace("http://", "https://");
+    let responseIconLink = forecastDay.condition.icon_url;
+    let responseIconLinkProtocol = responseIconLink.substring(0, 5);
     let day = formatDay(forecastDay.time * 1000);
+
+    if (responseIconLinkProtocol === "http:") {
+      responseIconLink = responseIconLink.replace("http://", "https://");
+    }
+
     if (index < 7) {
       forecastHTML += `
                 <div class="col">
                   <div class="weather-forecast-date">${day}</div>
                   <img
-                    src="${src}"
+                    src="${responseIconLink}"
                     alt=""
                     width="42"
                   />
@@ -71,14 +77,20 @@ function displayForecastFahrenheit(response) {
   forecast.forEach(function (forecastDay, index) {
     let maxTemperature = Math.round(forecastDay.temperature.maximum);
     let minTemperature = Math.round(forecastDay.temperature.minimum);
-    let src = forecastDay.condition.icon_url.replace("http://", "https://");
+    let responseIconLink = forecastDay.condition.icon_url;
+    let responseIconLinkProtocol = responseIconLink.substring(0, 5);
     let day = formatDay(forecastDay.time * 1000);
+
+    if (responseIconLinkProtocol === "http:") {
+      responseIconLink = responseIconLink.replace("http://", "https://");
+    }
+
     if (index < 7) {
       forecastHTML += `
                 <div class="col">
                   <div class="weather-forecast-date">${day}</div>
                   <img
-                    src="${src}"
+                    src="${responseIconLink}"
                     alt=""
                     width="42"
                   />
@@ -133,10 +145,12 @@ function updateWeatherDataCelsius(response) {
   let datetimeElement = document.querySelector("#date-time");
   let iconElement = document.querySelector("#weather-icon");
   let units = "c";
-  let icon_url_https = response.data.condition.icon_url.replace(
-    "http://",
-    "https://"
-  );
+  let responseIconLink = response.data.condition.icon_url;
+  let responseIconLinkProtocol = responseIconLink.substring(0, 5);
+
+  if (responseIconLinkProtocol === "http:") {
+    responseIconLink = responseIconLink.replace("http://", "https://");
+  }
 
   celsiusTemperature = response.data.temperature.current;
   temperatureElement.innerHTML = Math.round(celsiusTemperature);
@@ -147,7 +161,7 @@ function updateWeatherDataCelsius(response) {
   windUnits.innerHTML = "km/h";
   datetimeElement.innerHTML = formatDate(response.data.time * 1000);
 
-  iconElement.setAttribute("src", `${icon_url_https}`);
+  iconElement.setAttribute("src", `${responseIconLink}`);
   iconElement.setAttribute("alt", response.data.condition.description);
 
   celsiusLink.classList.replace("inactive", "active");
