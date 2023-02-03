@@ -39,7 +39,7 @@ function displayForecastCelsius(response) {
   forecast.forEach(function (forecastDay, index) {
     let maxTemperature = Math.round(forecastDay.temperature.maximum);
     let minTemperature = Math.round(forecastDay.temperature.minimum);
-    let src = forecastDay.condition.icon_url;
+    let src = forecastDay.condition.icon_url.replace("http://", "https://");
     let day = formatDay(forecastDay.time * 1000);
     if (index < 7) {
       forecastHTML += `
@@ -71,7 +71,7 @@ function displayForecastFahrenheit(response) {
   forecast.forEach(function (forecastDay, index) {
     let maxTemperature = Math.round(forecastDay.temperature.maximum);
     let minTemperature = Math.round(forecastDay.temperature.minimum);
-    let src = forecastDay.condition.icon_url;
+    let src = forecastDay.condition.icon_url.replace("http://", "https://");
     let day = formatDay(forecastDay.time * 1000);
     if (index < 7) {
       forecastHTML += `
@@ -133,6 +133,10 @@ function updateWeatherDataCelsius(response) {
   let datetimeElement = document.querySelector("#date-time");
   let iconElement = document.querySelector("#weather-icon");
   let units = "c";
+  let icon_url_https = response.data.condition.icon_url.replace(
+    "http://",
+    "https://"
+  );
 
   celsiusTemperature = response.data.temperature.current;
   temperatureElement.innerHTML = Math.round(celsiusTemperature);
@@ -143,11 +147,6 @@ function updateWeatherDataCelsius(response) {
   windUnits.innerHTML = "km/h";
   datetimeElement.innerHTML = formatDate(response.data.time * 1000);
 
-  let icon_url_https = response.data.condition.icon_url.replace(
-    "http://",
-    "https://"
-  );
-  //iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
   iconElement.setAttribute("src", `${icon_url_https}`);
   iconElement.setAttribute("alt", response.data.condition.description);
 
