@@ -94,26 +94,32 @@ function displayForecastFahrenheit(response) {
   forecastElement.innerHTML = forecastHTML;
 }
 
-// fetch forecast data with Celsius units
-function getForecastCelsius(coordinates) {
-  let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=metric`;
-  axios
-    .get(endpoint)
-    .then(displayForecastCelsius)
-    .catch(function (error) {
-      console.log(error);
-    });
-}
-
-// fetch forecast data with Fahrenheit units
-function getForecastFahrenheit(coordinates) {
-  let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=imperial`;
-  axios
-    .get(endpoint)
-    .then(displayForecastFahrenheit)
-    .catch(function (error) {
-      console.log(error);
-    });
+// fetch forecast data taking into account units
+// "c" == Celcius, "f" == Fahrenheit
+function getForecastUnits(coordinates, units) {
+  try {
+    if (units === "c") {
+      let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=metric`;
+      axios
+        .get(endpoint)
+        .then(displayForecastCelsius)
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else if (units === "f") {
+      let endpoint = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=imperial`;
+      axios
+        .get(endpoint)
+        .then(displayForecastFahrenheit)
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      throw error;
+    }
+  } catch (error) {
+    console.log(error, "Incorrect unit type");
+  }
 }
 
 // update HTML with weather data in Celsius units
@@ -126,6 +132,7 @@ function updateWeatherDataCelsius(response) {
   let windUnits = document.querySelector("#wind-units");
   let datetimeElement = document.querySelector("#date-time");
   let iconElement = document.querySelector("#weather-icon");
+  let units = "c";
 
   celsiusTemperature = response.data.temperature.current;
   temperatureElement.innerHTML = Math.round(celsiusTemperature);
@@ -138,7 +145,11 @@ function updateWeatherDataCelsius(response) {
 
   iconElement.setAttribute("src", `${response.data.condition.icon_url}`);
   iconElement.setAttribute("alt", response.data.condition.description);
-  getForecastCelsius(response.data.coordinates);
+
+  celsiusLink.classList.replace("inactive", "active");
+  fahrenheitLink.classList.replace("active", "inactive");
+
+  getForecastUnits(response.data.coordinates, units);
 }
 
 // update HTML with weather data about time, temperatures, wind speed and wind units in Fahrenheit units
@@ -147,44 +158,52 @@ function updateWeatherDataFahrenheit(response) {
   let windElement = document.querySelector("#wind");
   let windUnits = document.querySelector("#wind-units");
   let datetimeElement = document.querySelector("#date-time");
+  let units = "f";
 
   fahrenheitTemperature = response.data.temperature.current;
   temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
   windElement.innerHTML = Math.round(response.data.wind.speed);
   windUnits.innerHTML = "mph";
   datetimeElement.innerHTML = formatDate(response.data.time * 1000);
-  getForecastFahrenheit(response.data.coordinates);
+
+  getForecastUnits(response.data.coordinates, units);
 }
 
-//  request current weather data with Celsius units
-function searchCelsius(cityName) {
-  let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=metric`;
-  axios
-    .get(endpoint)
-    .then(updateWeatherDataCelsius)
-    .catch(function (error) {
-      console.log(error);
-      showError(cityName);
-    });
-}
-
-//  request current weather data with Fahrenheit units
-function searchFahrenheit(cityName) {
-  let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=imperial`;
-  axios
-    .get(endpoint)
-    .then(updateWeatherDataFahrenheit)
-    .catch(function (error) {
-      console.log(error);
-      showError(cityName);
-    });
+//  request current weather data taking into account units
+// "c" == Celcius, "f" == Fahrenheit
+function searchUnits(cityName, units) {
+  try {
+    if (units === "c") {
+      let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=metric`;
+      axios
+        .get(endpoint)
+        .then(updateWeatherDataCelsius)
+        .catch(function (error) {
+          console.log(error);
+          showError(cityName);
+        });
+    } else if (units === "f") {
+      let endpoint = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}&units=imperial`;
+      axios
+        .get(endpoint)
+        .then(updateWeatherDataFahrenheit)
+        .catch(function (error) {
+          console.log(error);
+          showError(cityName);
+        });
+    } else {
+      throw error;
+    }
+  } catch (error) {
+    console.log(error, "Incorrect unit type");
+  }
 }
 
 function handleSearchEvent(event) {
   event.preventDefault();
   let cityElement = document.querySelector("#city-input");
 
-  searchCelsius(cityElement.value);
+  searchUnits(cityElement.value, "c");
   document.querySelector("#search-form").reset();
   cleanErrorMessage();
 }
@@ -197,9 +216,10 @@ function displayCelsiusTemperature(event) {
   celsiusLink.classList.replace("inactive", "active");
   fahrenheitLink.classList.replace("active", "inactive");
   let cityName = document.querySelector("#city").innerText;
+  let units = "c";
 
   // fetch data with Celsius units
-  searchCelsius(cityName);
+  searchUnits(cityName, units);
 }
 
 function displayFahrenheitTemperature(event) {
@@ -211,8 +231,9 @@ function displayFahrenheitTemperature(event) {
   fahrenheitLink.classList.replace("inactive", "active");
   celsiusLink.classList.replace("active", "inactive");
 
+  let units = "f";
   // fetch data with Farenheit units
-  searchFahrenheit(cityName);
+  searchUnits(cityName, units);
 }
 
 // Global variables region
@@ -232,4 +253,4 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 // default search region
-searchCelsius("New York");
+searchUnits("New York", "c");
